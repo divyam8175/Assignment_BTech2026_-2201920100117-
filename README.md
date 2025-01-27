@@ -68,36 +68,26 @@ Solution:-
 #include <string>
 using namespace std;
 
-// Forward declaration
 class Appointment;
 
-// Class for Doctor
 class Doctor {
 public:
     int doctorID;
     string name;
     string specialization;
-    map<string, vector<string>> schedule; // Schedule: Day -> List of available slots
-
+    map<string, vector<string>> schedule;
     Doctor(int id, string n, string spec) : doctorID(id), name(n), specialization(spec) {
-        // Initialize schedule with default slots for each day
         vector<string> slots = {"9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "3:00 PM"};
         schedule = {{"Monday", slots}, {"Tuesday", slots}, {"Wednesday", slots},
                     {"Thursday", slots}, {"Friday", slots}};
     }
-
-    // Add an appointment to the schedule
     void addAppointment(const string &day, const string &slot) {
         auto &slots = schedule[day];
         slots.erase(remove(slots.begin(), slots.end(), slot), slots.end());
     }
-
-    // Cancel an appointment (make slot available)
     void cancelAppointment(const string &day, const string &slot) {
         schedule[day].push_back(slot);
     }
-
-    // View appointments for a specific day
     void viewSchedule(const string &day) {
         cout << "Schedule for " << name << " on " << day << ":\n";
         for (const auto &slot : schedule[day]) {
@@ -106,8 +96,6 @@ public:
         cout << endl;
     }
 };
-
-// Class for Patient
 class Patient {
 public:
     int patientID;
@@ -115,15 +103,10 @@ public:
     int age;
     string disease;
     vector<string> medicalHistory;
-
     Patient(int id, string n, int a, string d) : patientID(id), name(n), age(a), disease(d) {}
-
-    // Add a diagnosis or prescription to medical history
     void addMedicalHistory(const string &entry) {
         medicalHistory.push_back(entry);
     }
-
-    // View medical history
     void viewMedicalHistory() {
         cout << "Medical History for " << name << ":\n";
         for (const auto &entry : medicalHistory) {
@@ -131,7 +114,6 @@ public:
         }
     }
 };
-
 class Appointment {
 public:
     int appointmentID;
@@ -139,10 +121,8 @@ public:
     Patient *patient;
     string day;
     string time;
-
     Appointment(int id, Doctor *doc, Patient *pat, string d, string t)
         : appointmentID(id), doctor(doc), patient(pat), day(d), time(t) {}
-
     void displayAppointment() {
         cout << "Appointment ID: " << appointmentID << endl;
         cout << "Doctor: " << doctor->name << " (" << doctor->specialization << ")" << endl;
@@ -152,50 +132,33 @@ public:
 };
 
 int main() {
-    // Create sample doctors
     Doctor doc1(1, "Dr. Smith", "Cardiology");
     Doctor doc2(2, "Dr. Alice", "Dermatology");
-
-    // Create sample patients
     Patient pat1(1, "John Doe", 30, "Heart Disease");
     Patient pat2(2, "Jane Roe", 25, "Skin Allergy");
-
-    // Book an appointment
     Appointment app1(101, &doc1, &pat1, "Monday", "9:00 AM");
     doc1.addAppointment("Monday", "9:00 AM");
     pat1.addMedicalHistory("Consulted Dr. Smith for Heart Disease.");
-
-    // Book another appointment
     Appointment app2(102, &doc2, &pat2, "Tuesday", "10:00 AM");
     doc2.addAppointment("Tuesday", "10:00 AM");
     pat2.addMedicalHistory("Consulted Dr. Alice for Skin Allergy.");
-
-    // Display appointments
     cout << "Appointment Details:\n";
     app1.displayAppointment();
     cout << endl;
     app2.displayAppointment();
-
-    // View doctor's schedule
     cout << "\nDoctor's Schedule:\n";
     doc1.viewSchedule("Monday");
     doc2.viewSchedule("Tuesday");
-
-    // View patient's medical history
     cout << "\nPatient's Medical History:\n";
     pat1.viewMedicalHistory();
     pat2.viewMedicalHistory();
-
-    // Cancel an appointment
     cout << "\nCancelling an appointment...\n";
     doc1.cancelAppointment("Monday", "9:00 AM");
-
-    // Updated schedule
     cout << "\nUpdated Doctor's Schedule:\n";
     doc1.viewSchedule("Monday");
-
     return 0;
 }
+
 
 Explanation
 
