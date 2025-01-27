@@ -73,13 +73,11 @@ class Appointment;
 class Doctor {
 public:
     int doctorID;
-    string name;
-    string specialization;
+    string name, specialization;
     map<string, vector<string>> schedule;
     Doctor(int id, string n, string spec) : doctorID(id), name(n), specialization(spec) {
         vector<string> slots = {"9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "3:00 PM"};
-        schedule = {{"Monday", slots}, {"Tuesday", slots}, {"Wednesday", slots},
-                    {"Thursday", slots}, {"Friday", slots}};
+        schedule = {{"Monday", slots}, {"Tuesday", slots}, {"Wednesday", slots}, {"Thursday", slots}, {"Friday", slots}};
     }
     void addAppointment(const string &day, const string &slot) {
         auto &slots = schedule[day];
@@ -90,18 +88,16 @@ public:
     }
     void viewSchedule(const string &day) {
         cout << "Schedule for " << name << " on " << day << ":\n";
-        for (const auto &slot : schedule[day]) {
-            cout << slot << " ";
-        }
+        for (const auto &slot : schedule[day]) cout << slot << " ";
         cout << endl;
     }
 };
+
 class Patient {
 public:
     int patientID;
-    string name;
+    string name, disease;
     int age;
-    string disease;
     vector<string> medicalHistory;
     Patient(int id, string n, int a, string d) : patientID(id), name(n), age(a), disease(d) {}
     void addMedicalHistory(const string &entry) {
@@ -109,20 +105,17 @@ public:
     }
     void viewMedicalHistory() {
         cout << "Medical History for " << name << ":\n";
-        for (const auto &entry : medicalHistory) {
-            cout << "- " << entry << endl;
-        }
+        for (const auto &entry : medicalHistory) cout << "- " << entry << endl;
     }
 };
+
 class Appointment {
 public:
     int appointmentID;
     Doctor *doctor;
     Patient *patient;
-    string day;
-    string time;
-    Appointment(int id, Doctor *doc, Patient *pat, string d, string t)
-        : appointmentID(id), doctor(doc), patient(pat), day(d), time(t) {}
+    string day, time;
+    Appointment(int id, Doctor *doc, Patient *pat, string d, string t) : appointmentID(id), doctor(doc), patient(pat), day(d), time(t) {}
     void displayAppointment() {
         cout << "Appointment ID: " << appointmentID << endl;
         cout << "Doctor: " << doctor->name << " (" << doctor->specialization << ")" << endl;
@@ -132,14 +125,11 @@ public:
 };
 
 int main() {
-    Doctor doc1(1, "Dr. Smith", "Cardiology");
-    Doctor doc2(2, "Dr. Alice", "Dermatology");
-    Patient pat1(1, "John Doe", 30, "Heart Disease");
-    Patient pat2(2, "Jane Roe", 25, "Skin Allergy");
-    Appointment app1(101, &doc1, &pat1, "Monday", "9:00 AM");
+    Doctor doc1(1, "Dr. Smith", "Cardiology"), doc2(2, "Dr. Alice", "Dermatology");
+    Patient pat1(1, "John Doe", 30, "Heart Disease"), pat2(2, "Jane Roe", 25, "Skin Allergy");
+    Appointment app1(101, &doc1, &pat1, "Monday", "9:00 AM"), app2(102, &doc2, &pat2, "Tuesday", "10:00 AM");
     doc1.addAppointment("Monday", "9:00 AM");
     pat1.addMedicalHistory("Consulted Dr. Smith for Heart Disease.");
-    Appointment app2(102, &doc2, &pat2, "Tuesday", "10:00 AM");
     doc2.addAppointment("Tuesday", "10:00 AM");
     pat2.addMedicalHistory("Consulted Dr. Alice for Skin Allergy.");
     cout << "Appointment Details:\n";
@@ -158,6 +148,7 @@ int main() {
     doc1.viewSchedule("Monday");
     return 0;
 }
+
 
 
 Explanation
