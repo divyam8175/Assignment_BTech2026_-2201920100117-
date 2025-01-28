@@ -2,7 +2,7 @@
 This is repository is for daily basis update on assignment
 
 
-OOPs Question No:-1
+**OOPs Question No:-1**
 
  Problem Statement:
  A multi-specialty hospital requires a management system to track doctors, patients, and appointments. Each doctor has attributes such as doctorID, name, specialization, and their schedule for each day of the week. Patients have attributes like patientID, name, age, disease, and appointmentDate. The system should allow patients to book appointments with a doctor based on their specialization and availability. Once an appointment is booked, it must be reflected in the doctor's daily schedule. Doctors can also cancel appointments, which will make the slot available for others. Additionally, the system should keep a record of the patient's medical history, including previous diagnoses and prescriptions. The hospital should also generate a report of the appointments scheduled for a specific doctor or patient. Implement the system using OOP principles and create classes for Doctor, Patient, and Appointment.
@@ -60,16 +60,12 @@ Reports:
 Generate all appointments for a specific doctor or patient.
 
 
-Solution:-
-
+******Solution:-******
 #include <iostream>
 #include <vector>
 #include <map>
 #include <string>
 using namespace std;
-
-class Appointment;
-
 class Doctor {
 public:
     int doctorID;
@@ -92,7 +88,6 @@ public:
         cout << endl;
     }
 };
-
 class Patient {
 public:
     int patientID;
@@ -108,7 +103,6 @@ public:
         for (const auto &entry : medicalHistory) cout << "- " << entry << endl;
     }
 };
-
 class Appointment {
 public:
     int appointmentID;
@@ -123,7 +117,6 @@ public:
         cout << "Day: " << day << ", Time: " << time << endl;
     }
 };
-
 int main() {
     Doctor doc1(1, "Dr. Smith", "Cardiology"), doc2(2, "Dr. Alice", "Dermatology");
     Patient pat1(1, "John Doe", 30, "Heart Disease"), pat2(2, "Jane Roe", 25, "Skin Allergy");
@@ -150,10 +143,7 @@ int main() {
 }
 
 
-
-Explanation
-
-Explanation
+********Explanation********
 Classes and Attributes:
 
 Doctor tracks doctor-specific data and their weekly schedule.
