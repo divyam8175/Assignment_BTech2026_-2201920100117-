@@ -1,0 +1,209 @@
+
+# Assignment_BTech2026_-2201920100117-
+
+This is repository is for daily basis update on assignment
+
+## Question Number 5
+
+
+
+
+
+
+## Problem Statement
+A vehicle rental company rents cars, bikes, and trucks to customers. Each vehicle has attributes like vehicleID, brand, model, rentalCostPerDay, and availability. Cars have additional attributes such as numberOfSeats, bikes have engineCapacity, and trucks have maximumLoadCapacity. Customers can rent a vehicle for a specified number of days, and the system calculates the total rental cost accordingly. A vehicle cannot be rented if it is already booked by someone else. After returning the vehicle, the system should mark it as available. The company also requires a report to display all rented vehicles and the customers who have rented them. Implement this system using a base class Vehicle and derived classes for Car, Bike, and Truck. Create additional classes like Customer and Renta
+## Approach
+
+Key Classes & Responsibilities
+
+Vehicle (Base Class)
+
+Common attributes: vehicleID, brand, model, rentalCostPerDay, availability
+Common methods: rentVehicle(), returnVehicle()
+
+Derived Classes
+
+Car: Inherits from Vehicle and adds numberOfSeats
+Bike: Inherits from Vehicle and adds engineCapacity
+Truck: Inherits from Vehicle and adds maximumLoadCapacity
+
+Customer Class
+
+Attributes: customerID, name, rentedVehicleID
+Methods: rentVehicle(), returnVehicle()
+
+Rental Management System
+
+Handles rental transactions.
+Prevents renting unavailable vehicles.
+Maintains records of rented vehicles.
+## Solution
+```bash
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+class Vehicle {
+protected:
+    int vehicleID;
+    string brand, model;
+    double rentalCostPerDay;
+    bool available;
+
+public:
+    Vehicle(int id, string b, string m, double cost)
+        : vehicleID(id), brand(b), model(m), rentalCostPerDay(cost), available(true) {}
+
+    virtual void displayDetails() {
+        cout << "ID: " << vehicleID << ", Brand: " << brand << ", Model: " << model
+             << ", Rental Cost per Day: $" << rentalCostPerDay
+             << ", Available: " << (available ? "Yes" : "No") << endl;
+    }
+
+    bool isAvailable() { return available; }
+    int getVehicleID() { return vehicleID; }
+    double getRentalCost() { return rentalCostPerDay; }
+
+    void rentVehicle() { available = false; }
+    void returnVehicle() { available = true; }
+};
+
+class Car : public Vehicle {
+private:
+    int numberOfSeats;
+
+public:
+    Car(int id, string b, string m, double cost, int seats)
+        : Vehicle(id, b, m, cost), numberOfSeats(seats) {}
+
+    void displayDetails() override {
+        Vehicle::displayDetails();
+        cout << "Seats: " << numberOfSeats << endl;
+    }
+};
+
+class Bike : public Vehicle {
+private:
+    int engineCapacity;
+
+public:
+    Bike(int id, string b, string m, double cost, int capacity)
+        : Vehicle(id, b, m, cost), engineCapacity(capacity) {}
+
+    void displayDetails() override {
+        Vehicle::displayDetails();
+        cout << "Engine Capacity: " << engineCapacity << "cc" << endl;
+    }
+};
+
+class Truck : public Vehicle {
+private:
+    double maxLoadCapacity;
+
+public:
+    Truck(int id, string b, string m, double cost, double capacity)
+        : Vehicle(id, b, m, cost), maxLoadCapacity(capacity) {}
+
+    void displayDetails() override {
+        Vehicle::displayDetails();
+        cout << "Max Load Capacity: " << maxLoadCapacity << " tons" << endl;
+    }
+};
+
+class Customer {
+private:
+    int customerID;
+    string name;
+    int rentedVehicleID;
+
+public:
+    Customer(int id, string n) : customerID(id), name(n), rentedVehicleID(-1) {}
+
+    void rentVehicle(Vehicle &vehicle, int days) {
+        if (vehicle.isAvailable()) {
+            rentedVehicleID = vehicle.getVehicleID();
+            vehicle.rentVehicle();
+            cout << name << " rented vehicle ID: " << rentedVehicleID
+                 << " for " << days << " days. Total cost: $"
+                 << vehicle.getRentalCost() * days << endl;
+        } else {
+            cout << "Vehicle ID: " << vehicle.getVehicleID() << " is not available." << endl;
+        }
+    }
+
+    void returnVehicle(Vehicle &vehicle) {
+        if (rentedVehicleID == vehicle.getVehicleID()) {
+            rentedVehicleID = -1;
+            vehicle.returnVehicle();
+            cout << name << " returned the vehicle." << endl;
+        } else {
+            cout << "Error: Customer has not rented this vehicle." << endl;
+        }
+    }
+};
+
+class RentalSystem {
+private:
+    vector<Vehicle *> vehicles;
+    map<int, Customer *> rentals;
+
+public:
+    void addVehicle(Vehicle *v) { vehicles.push_back(v); }
+
+    void rentVehicle(int customerID, Customer &customer, int vehicleID, int days) {
+        for (auto &v : vehicles) {
+            if (v->getVehicleID() == vehicleID) {
+                customer.rentVehicle(*v, days);
+                rentals[vehicleID] = &customer;
+                return;
+            }
+        }
+        cout << "Vehicle ID: " << vehicleID << " not found." << endl;
+    }
+
+    void returnVehicle(int customerID, int vehicleID) {
+        if (rentals.find(vehicleID) != rentals.end()) {
+            rentals[vehicleID]->returnVehicle(*vehicles[vehicleID - 1]);
+            rentals.erase(vehicleID);
+        } else {
+            cout << "No active rental found for Vehicle ID: " << vehicleID << endl;
+        }
+    }
+
+    void displayRentedVehicles() {
+        cout << "\nRented Vehicles Report:\n";
+        for (auto &r : rentals) {
+            cout << "Vehicle ID: " << r.first << " is rented by " << r.second->getName() << endl;
+        }
+    }
+};
+
+int main() {
+    RentalSystem rentalSystem;
+
+    Car car1(1, "Toyota", "Camry", 50, 5);
+    Bike bike1(2, "Yamaha", "R15", 30, 150);
+    Truck truck1(3, "Volvo", "FH16", 100, 20);
+
+    rentalSystem.addVehicle(&car1);
+    rentalSystem.addVehicle(&bike1);
+    rentalSystem.addVehicle(&truck1);
+
+    Customer cust1(101, "John");
+    Customer cust2(102, "Alice");
+
+    rentalSystem.rentVehicle(101, cust1, 1, 3);
+    rentalSystem.rentVehicle(102, cust2, 2, 2);
+
+    rentalSystem.displayRentedVehicles();
+
+    rentalSystem.returnVehicle(101, 1);
+    rentalSystem.returnVehicle(102, 2);
+
+    return 0;
+}
+
+}
+```
